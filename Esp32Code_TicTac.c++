@@ -9,6 +9,9 @@ Servo rotaquad_esquerdo;
 Servo pe_direito;
 Servo pe_esquerdo;
 
+
+ String cmd;
+
 //Ultrassônico
 int Trig = 12;
 int Echo = 13;
@@ -16,17 +19,14 @@ float TempoEcho = 0;
 float Distancia = 0;
 
 // RGB
-int pinR = 34;
-int pinG = 35;
-int pinB = 32;
-int ledcRbat = 0; //entrada PWM usada para o led
-int ledcGbat = 1; //entrada PWM usada para o led
-int ledcBbat = 2; //entrada PWM usada para o led
+int pinR = 23;
+int pinG = 22;
+int pinB = 21;
 
 // sensor de pulso
 int pinbat_in = 25; //entrada do cabo para receber os batimentos
 int bat_GPIO;       //variavel do batimento
-int bat_lixo 550;   //sinal a ser ignorada
+int bat_lixo = 550;   //sinal a ser ignorada
 int freq = 5000;  // frequencia de 5000 Hz
 int res = 8;  // resolução de 8 bits
 
@@ -54,24 +54,15 @@ void setup() {
   pinMode(Echo, INPUT);
   
   pinMode(pinR,OUTPUT);         // pin do led 
-  ledcSetup(pinR, freq, res);   //setup do led PWM 
-  ledcAttachPin(pinR, ledcRbat); //selecionando qual entrada vai funcionar para o led 
-
-    pinMode(pinG,OUTPUT);         // pin do led
-  ledcSetup(pinR, freq, res);   //setup do led PWM 
-  ledcAttachPin(pinR, ledcGbat); //selecionando qual entrada vai funcionar para o led 
-
-    pinMode(pinB,OUTPUT);         // pin do led
-  ledcSetup(pinB, freq, res);   //setup do led PWM
-  ledcAttachPin(pinB, ledcBbat); //selecionando qual entrada vai funcionar para o led
+  pinMode(pinG,OUTPUT);         // pin do led
+  pinMode(pinB,OUTPUT);         // pin do led
 }
-
 
 void loop(){
 
 //Comunicação com a prog
   if (Serial.available()) {
-    String cmd = Serial.readStringUntil('\n');
+    cmd = Serial.readStringUntil('\n');
     if (cmd == "VERMELHO") {
       pulsaVermelho();
       AtivaPulseSensor();
@@ -79,7 +70,7 @@ void loop(){
     else if (cmd == "AZUL"){
       pulsaAzul();
     }
-    esle if (cmd == "LARANJA"){
+    else if (cmd == "LARANJA"){
       pulsaLaranja();
     }
     else if (cmd == "VERDE"){
@@ -88,8 +79,8 @@ void loop(){
     else if (cmd == "AMARELO"){
       pulsaAmarelo();
     }
-    else (cmd == "ROSA"){
-      pulsaRosa()
+    else if (cmd == "ROSA"){
+      pulsaRosa();
     }
   }
   
@@ -193,106 +184,150 @@ void respostaDistancia() {
 */
 
 void AtivaPulseSensor(){
-while(cmd != ROSA){
-if (bat_GPIO > bat_lixo){
-    pulsaVermelho()
-    }
-    if (Serial.available()) cmd = Serial.readStringUntil('\n');
+while(cmd != "ROSA"){
+      bat_GPIO = analogRead(pinbat_in);
+  if (bat_GPIO > bat_lixo){
+    pulsaVermelho();
+  }
+  if (Serial.available()) cmd = Serial.readStringUntil('\n');
   }
 
   digitalWrite(pinR, 0);
   digitalWrite(pinB, 0);
-    pulsaVerde()
-    return 0;
+  pulsaVerde();
     }
 
+//funções do LED
+void pulsaVermelho() {
+  int vermelho;
 
-    //funções do LED
-void pulsaVermelho(){
-for (int i = 0; i<= 255; i++){
-    ledcWrite(pinR, i);
-    delay(10);
-      }
-  for (int i = 255; i>= 0; i--){
-    ledcWrite(pinR, i);
-    delay(10);
-      }
-    }
+  for (int i = 0; i <= 255; i++) {
+    vermelho = i;
 
-void pulsaVerde(){
-for (int i = 0; i<= 255; i++){
-    ledcWrite(pinG, i);
+    analogWrite(pinR, vermelho);
+    analogWrite(pinG, 0);
+    analogWrite(pinB, 0);   
     delay(10);
-      }
-  for (int i = 255; i>= 0; i--){
-    ledcWrite(pinG, i);
+  }
+
+  for (int i = 255; i >= 0; i--) {
+    vermelho = i;
+
+    analogWrite(pinR, vermelho);
+    analogWrite(pinG, 0);
+    analogWrite(pinB, 0);
     delay(10);
-      }
-    }
+  }
+}
+
+void pulsaVerde() {
+  int verde;
+
+  for (int i = 0; i <= 255; i++) {
+    verde = i;
+
+    analogWrite(pinR, );
+    analogWrite(pinG, verde);
+    analogWrite(pinB, 0);   
+    delay(10);
+  }
+
+  for (int i = 255; i >= 0; i--) {
+    verde = i;
+
+    analogWrite(pinR, 0);
+    analogWrite(pinG, verde);
+    analogWrite(pinB, 0);
+    delay(10);
+  }
+}
   
-void pulsaAzul(){
-for (int i = 0; i<= 255; i++){
-    ledcWrite(pinB, i);
-    delay(10);
-      }
-  for (int i = 255; i>= 0; i--){
-    ledcWrite(pinB, i);
-    delay(10);
-      }
-    }
-void pulsaLaranja(){
-int verde;
-digitalWrite(pinB, 0);
-for (int i = 0; i<= 255; i++){
-    ledcWrite(pinR, i);
-    verde = (int)(i*0,55);
-    ledcWrite(pinG, verde);
-    delay(10);
-      }
-  for (int i = 255; i>= 0; i--){
-    ledcWrite(pinR, i);
-    verde = (int)(i*0,55);
-    ledcWrite(pinG, verde);
-    delay(10);
-      }
-    }
+void pulsaAzul() {
+  int Azul;
 
-void pulsaAmarelo(){
-int verde;
-int Vermelho;
-digitalWrite(pinB, 0);
-for (int i = 0; i<= 255; i++){
-    Vermelho = (int)(i*0,8);
-    ledcWrite(pinG, Vermelho); 
-    verde = (int)(i*0,8);
-    ledcWrite(pinG, verde);
-    delay(10);
-      }
-  for (int i = 255; i>= 0; i--){
-    Vermelho = (int)(i*0,8);
-    ledcWrite(pinG, Vermelho);
-    verde = (int)(i*0,8);
-    ledcWrite(pinG, verde);
-    delay(10);
-      }
-    }
+  for (int i = 0; i <= 255; i++) {
+    Azul = i;
 
-  void pulsaRosa(){
-int Azul;
-int verde;
-digitalWrite(pinB, 0);
-for (int i = 0; i<= 255; i++){
-    ledcWrite(pinR, i);
-    Azul = (int)(i*0,8);
-    verde = (int)(i*0.75);
-    ledcWrite(pinB, Azul);
+    analogWrite(pinR, 0);
+    analogWrite(pinG, 0);
+    analogWrite(pinB, Azul);   
     delay(10);
-      }
-  for (int i = 255; i>= 0; i--){
-    ledcWrite(pinR, i);
-    Azul = (int)(i*0,8);
-    verde = (int)(i*0.75); 
-    ledcWrite(pinB, Azul);
+  }
+
+  for (int i = 255; i >= 0; i--) {
+    Azul = i;
+
+    analogWrite(pinR, 0);
+    analogWrite(pinG, 0);
+    analogWrite(pinB, Azul);
     delay(10);
-      }
-    }
+  }
+}
+
+void pulsaLaranja() {
+  int vermelho, verde;
+
+  for (int i = 0; i <= 255; i++) {
+    vermelho = i;           
+    verde = i * 0.5;        
+
+    analogWrite(pinR, vermelho);
+    analogWrite(pinG, verde);
+    analogWrite(pinB, 0);
+    delay(10);
+  }
+
+  for (int i = 255; i >= 0; i--) {
+    vermelho = i;
+    verde = i * 0.5;
+
+    analogWrite(pinR, vermelho);
+    analogWrite(pinG, verde);
+    analogWrite(pinB, 0);
+    delay(10);
+  }
+}
+
+void pulsaAmarelo() {
+  int vermelho, verde;
+
+  for (int i = 0; i <= 255; i++) {
+    vermelho = i;        
+    verde = i;           
+    analogWrite(pinR, vermelho);
+    analogWrite(pinG, verde);
+    analogWrite(pinB, 0);  
+    delay(10);
+  }
+
+  for (int i = 255; i >= 0; i--) {
+    vermelho = i;
+    verde = i;
+    analogWrite(pinR, vermelho);
+    analogWrite(pinG, verde);
+    analogWrite(pinB, 0);
+    delay(10);
+  }
+}
+
+void pulsaRosa() {
+  int vermelho, azul;
+
+  for (int i = 0; i <= 255; i++) {
+    vermelho = i;          
+    azul = i * 0.6;        
+    analogWrite(pinR, vermelho);
+    analogWrite(pinB, azul);
+    analogWrite(pinG, 0);  
+    delay(10);
+  }
+
+  for (int i = 255; i >= 0; i--) {
+    vermelho = i;
+    azul = i * 0.6;
+    analogWrite(pinR, vermelho);
+    analogWrite(pinB, azul);
+    analogWrite(pinG, 0);
+    delay(10);
+  }
+}
