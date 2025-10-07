@@ -53,6 +53,7 @@ void setup() {
   pinMode(Trig, OUTPUT);
   pinMode(Echo, INPUT);
   
+//Definição dos leds
   pinMode(pinR,OUTPUT);         // pin do led 
   pinMode(pinG,OUTPUT);         // pin do led
   pinMode(pinB,OUTPUT);         // pin do led
@@ -83,11 +84,6 @@ void loop(){
       pulsaRosa();
     }
   }
-  
-  //funções soltas (sensor utrassônico)
-  enviarPulso();
-  calculaDistancia();
-  imprimeDistancia();
 }
 
 //Código para andar 
@@ -226,7 +222,7 @@ void pulsaVerde() {
   for (int i = 0; i <= 255; i++) {
     verde = i;
 
-    analogWrite(pinR, );
+    analogWrite(pinR, 0);
     analogWrite(pinG, verde);
     analogWrite(pinB, 0);   
     delay(10);
@@ -331,3 +327,4 @@ void pulsaRosa() {
     delay(10);
   }
 }
+// jasklçfjklasjfkja
