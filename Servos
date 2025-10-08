@@ -1,0 +1,84 @@
+#include <ESP32Servo.h>
+
+Servo levantaquad_direito;
+Servo levantaquad_esquerdo;
+Servo rotaquad_direito;
+Servo rotaquad_esquerdo;
+Servo pe_direito;
+Servo pe_esquerdo;
+
+void setup(){
+  levantaquad_esquerdo.attach(13);
+  levantaquad_direito.attach(12);
+  rotaquad_esquerdo.attach(14);
+  rotaquad_direito.attach(26);
+  pe_esquerdo.attach(23);
+  pe_direito.attach(22);
+
+  levantaquad_esquerdo.write(90);
+  levantaquad_direito.write(90);
+  rotaquad_esquerdo.write(90);
+  rotaquad_direito.write(90);
+  pe_esquerdo.write(90);
+  pe_direito.write(90);
+}
+
+void loop(){
+    avanca_direita() ;
+    avanca_esquerda();
+    peso_na_direita();
+    peso_na_esquerda();
+    rotaquad_direito.write(0);
+    delay(100);
+    rotaquad_esquerdo.write(0);
+    delay(100);
+    rotaquad_direito.write(180);
+    delay(100);
+    rotaquad_esquerdo.write(180);
+}
+
+void avanca_esquerda() {
+  levantaquad_esquerdo.write(110);//levanta o quadril 5
+  delay(10);
+  pe_esquerdo.write(70);//abaixa o pé
+  delay(20);
+  pe_direito.write(70);//levanta o pé
+  delay(10);
+  levantaquad_direito.write(110);//perna para trás
+  delay(10);
+}
+
+void avanca_direita() {
+  levantaquad_direito.write(70);//levanta o quadril
+  delay(10);
+  pe_direito.write(110);//abaixa o pé
+  delay(20);
+  pe_esquerdo.write(110);
+  delay(100);
+  levantaquad_esquerdo.write(70);// perna para trás
+  delay(10);
+}
+
+void peso_na_esquerda(){
+  pe_direito.write(110);
+  delay(10);
+  pe_esquerdo.write(90);
+  delay(100);
+  levantaquad_esquerdo.write(90);//joga o peso para a perna esquerda
+  delay(50);
+  levantaquad_direito.write(90);
+  delay(100);
+  pe_direito.write(90);//retorna tudo para posição inicial
+}
+
+void peso_na_direita(){
+  pe_esquerdo.write(70);
+  delay(10);
+  pe_direito.write(90);
+  delay(100);
+  levantaquad_direito.write(90);//joga o peso para a perna esquerda
+  delay(50);
+  levantaquad_esquerdo.write(90);
+  delay(100);
+  pe_esquerdo.write(90);//retorna tudo para posição inicial
+}
