@@ -34,12 +34,12 @@ void setup() {
   Serial.begin(115200);
 
 //Definição dos pinos dos servos
-  levantaquad_esquerdo.attach(14);
-  levantaquad_direito.attach(27);
-  rotaquad_esquerdo.attach();
-  rotaquad_direito.attach();
-  pe_esquerdo.attach(26);
-  pe_direito.attach(25);
+  levantaquad_esquerdo.attach(12);
+  levantaquad_direito.attach(13);
+  rotaquad_esquerdo.attach(14);
+  rotaquad_direito.attach(22);
+  pe_esquerdo.attach(23);
+  pe_direito.attach(26);
 
 //Definição ângulo dos servos
   levantaquad_esquerdo.write(90);
