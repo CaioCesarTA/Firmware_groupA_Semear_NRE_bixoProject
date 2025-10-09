@@ -36,18 +36,18 @@ void setup() {
 //Definição dos pinos dos servos
   levantaquad_esquerdo.attach(14);
   levantaquad_direito.attach(27);
-  //rotaquad_esquerdo.attach();
-  //rotaquad_direito.attach();
+  rotaquad_esquerdo.attach();
+  rotaquad_direito.attach();
   pe_esquerdo.attach(26);
-  //pe_direito.attach(25);
+  pe_direito.attach(25);
 
 //Definição ângulo dos servos
   levantaquad_esquerdo.write(90);
   levantaquad_direito.write(90);
-  //rotaquad_esquerdo.write(90);
-  //rotaquad_direito.write(90);
+  rotaquad_esquerdo.write(90);
+  rotaquad_direito.write(90);
   pe_esquerdo.write(90);
-  //pe_direito.write(90);
+  pe_direito.write(90);
 
 //Sensor Ultrassônico 
   pinMode(Trig, OUTPUT);
@@ -92,17 +92,19 @@ void avanca_esquerda() {
   delay(1000);
   pe_esquerdo.write(70);//abaixa o pé
   delay(2000);
-//  pe_direito.write(70);levanta o pé
+  pe_direito.write(70); //levanta o pé
+  delay(10);
   levantaquad_direito.write(110);//perna para trás
   delay(1000);
 }
-/*
+
 void avanca_direita() {
   levantaquad_direito.write(70);//levanta o quadril
   delay(1000);
   pe_direito.write(110);//abaixa o pé
   delay(2000);
   pe_esquerdo.write(110);
+  delay(10);
   levantaquad_esquerdo.write(70);// perna para trás
   delay(1000);
 }
@@ -111,30 +113,37 @@ void peso_na_esquerda(){
   pe_direito.write(110);
   delay(1000);
   pe_esquerdo.write(90);
+  delay(10);
   levantaquad_esquerdo.write(90);//joga o peso para a perna esquerda
   delay(500);
   levantaquad_direito.write(90);
+  delay(10);
   pe_direito.write(90);//retorna tudo para posição inicial
+  delay(200);
 }
 
 void peso_na_direita(){
   pe_esquerdo.write(70);
   delay(1000);
   pe_direito.write(90);
+  delay(10);
   levantaquad_direito.write(90);//joga o peso para a perna esquerda
   delay(500);
   levantaquad_esquerdo.write(90);
+  delay(10);
   pe_esquerdo.write(90);//retorna tudo para posição inicial
+  delay(200);
 }
 
 void anda_para_frente() {
   avanca_direita();
-  delay(2000);
+  delay(200);
   peso_na_direita();
-  delay(2000);
+  delay(200);
   avanca_esquerda();
-  delay(2000);
+  delay(200);
   peso_na_direita();
+  delay(200);
 }
 
 //curvas
@@ -145,39 +154,21 @@ void virar_direita() {
 void virar_esquerda() {
 
 }
-*/
+
+
 // sensor ultrassônico
-void enviarPulso() {
+void ultrassonico() {
   digitalWrite(Trig, HIGH);
   delayMicroseconds(10);
   digitalWrite(Trig, LOW);
-}
-
-float calculaDistancia() {
   TempoEcho = pulseIn(Echo, HIGH);
   return((TempoEcho*0.0343)/2);
-}
-
-void imprimeDistancia() {
   Serial.print("Distância: ");
   Distancia = calculaDistancia();
   Serial.println(Distancia);
 }
-/*
-void respostaDistancia() {
-  if (Distancia > 50) {
-    ligarVerde();
-  }
-  if (Distancia <= 50 && Distancia >= 10) {
-    ligarAmarelo();
-  }
-  if (Distancia < 10) {
-    ligarVermelho();
-  }
-    delay(500);
-  
-}
-*/
+
+
 
 void AtivaPulseSensor(){
 while(cmd != "ROSA"){
