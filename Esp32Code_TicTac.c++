@@ -157,14 +157,13 @@ void virar_esquerda() {
 
 
 // sensor ultrassônico
-void ultrassonico() {
+float ultrassonico() {
   digitalWrite(Trig, HIGH);
   delayMicroseconds(10);
   digitalWrite(Trig, LOW);
   TempoEcho = pulseIn(Echo, HIGH);
-  return((TempoEcho*0.0343)/2);
   Serial.print("Distância: ");
-  Distancia = calculaDistancia();
+  Distancia = (TempoEcho*0.0343)/2;
   Serial.println(Distancia);
 }
 
