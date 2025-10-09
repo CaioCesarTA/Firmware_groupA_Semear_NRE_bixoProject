@@ -19,9 +19,9 @@ float TempoEcho = 0;
 float Distancia = 0;
 
 // RGB
-int pinR = 23;
-int pinG = 22;
-int pinB = 21;
+int pinR = 25;
+int pinG = 33;
+int pinB = 32;
 
 // sensor de pulso
 int pinbat_in = 25; //entrada do cabo para receber os batimentos
