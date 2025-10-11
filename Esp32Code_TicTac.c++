@@ -168,13 +168,14 @@ float ultrassonico() {
 }
 
 
-
+//funcao para o sensor de pulso
 void AtivaPulseSensor(){
 while(cmd != "ROSA"){
       bat_GPIO = analogRead(pinbat_in);
   if (bat_GPIO > bat_lixo){
-    pulsaVermelho();
+    piscaVermelho;
   }
+
   if (Serial.available()) cmd = Serial.readStringUntil('\n');
   }
 
@@ -183,6 +184,16 @@ while(cmd != "ROSA"){
   pulsaVerde();
     }
 
+
+void piscaVermelho(){
+
+analogWrite(pinG, 0);
+analogWrite(pinB, 0);
+analogWrite(pinR, 255);
+delay(10);
+analogWrite(pinR, 0);
+
+}
 //funções do LED
 void pulsaVermelho() {
   int vermelho;
@@ -317,4 +328,3 @@ void pulsaRosa() {
     delay(10);
   }
 }
-// jasklçfjklasjfkja
