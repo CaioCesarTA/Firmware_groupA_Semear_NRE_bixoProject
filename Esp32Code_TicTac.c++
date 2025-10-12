@@ -13,10 +13,10 @@ Servo pe_esquerdo;
  String cmd;
 
 //Ultrassônico
-int Trig = 12;
-int Echo = 13;
-float TempoEcho = 0;
-float Distancia = 0;
+int Trig = 18;
+int Echo = 19;
+const float VELOCIDADE_SOM_CM_US = 0.0343; 
+const long MAX_TIMEOUT_US = 25000; 
 
 // RGB
 int pinR = 25;
@@ -83,6 +83,18 @@ void loop(){
     else if (cmd == "ROSA"){
       pulsaRosa();
     }
+  }
+
+//Ultrassônico
+  float Distancia = medirDistancia(); 
+
+  Serial.print("Distância: ");
+  
+  if (Distancia > 0) {
+    Serial.print(Distancia);
+    Serial.println(" cm");
+  } else {
+    Serial.println("Erro");
   }
 }
 
@@ -157,14 +169,29 @@ void virar_esquerda() {
 
 
 // sensor ultrassônico
-float ultrassonico() {
+float medirDistancia() {
+  long duracao_us; 
+  float distancia;
+
+
+  digitalWrite(Trig, LOW);
+  delayMicroseconds(2);
   digitalWrite(Trig, HIGH);
   delayMicroseconds(10);
   digitalWrite(Trig, LOW);
-  TempoEcho = pulseIn(Echo, HIGH);
-  Serial.print("Distância: ");
-  Distancia = (TempoEcho*0.0343)/2;
-  Serial.println(Distancia);
+
+  duracao_us = pulseIn(Echo, HIGH, MAX_TIMEOUT_US); 
+
+  if (duracao_us == 0) {
+    return 0.0; // Retorna 0.0 para ser tratado como 'Erro' no loop()
+  }
+
+  distancia = (duracao_us * VELOCIDADE_SOM_CM_US) / 2;
+
+  if (distancia < 2.0 || distancia > 400.0) {
+      return 0.0;
+  }
+  return distancia;
 }
 
 
