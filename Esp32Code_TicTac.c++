@@ -24,7 +24,7 @@ int pinG = 32;
 int pinB = 33;
 
 // sensor de pulso
-int pinbat_in = 25; //entrada do cabo para receber os batimentos
+int pinbat_in = 34; //entrada do cabo para receber os batimentos
 int bat_GPIO;       //variavel do batimento
 int bat_lixo = 550;   //sinal a ser ignorada
 int freq = 5000;  // frequencia de 5000 Hz
@@ -160,11 +160,17 @@ void anda_para_frente() {
 
 //curvas
 void virar_direita() {
-
+  rotaquad_direito.write(110);
+  delay(100);
+  rotaquad_esquerdo.write(70);
+  delay(100);
 }
 
 void virar_esquerda() {
-
+  rotaquad_esquerdo.write(110);
+  delay(100);
+  rotaquad_direito.write(70);
+  delay(100);
 }
 
 
@@ -192,6 +198,13 @@ float medirDistancia() {
       return 0.0;
   }
   return distancia;
+
+  if (distancia < 5){
+    peso_na_direita();
+    delay(100);
+    peso_na_esquerda();
+    delay(100);
+  }
 }
 
 
@@ -209,7 +222,7 @@ while(cmd != "ROSA"){
   digitalWrite(pinR, 0);
   digitalWrite(pinB, 0);
   pulsaVerde();
-    }
+}
 
 
 void piscaVermelho(){
@@ -233,6 +246,7 @@ void pulsaVermelho() {
     analogWrite(pinB, 0);   
     delay(10);
   }
+
 
   for (int i = 255; i >= 0; i--) {
     vermelho = i;
