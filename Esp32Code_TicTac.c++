@@ -13,15 +13,15 @@ Servo pe_esquerdo;
  String cmd;
 
 //Ultrassônico
-int Trig = 18;
-int Echo = 19;
+int Trig = 19;
+int Echo = 18;
 const float VELOCIDADE_SOM_CM_US = 0.0343; 
 const long MAX_TIMEOUT_US = 25000; 
 
 // RGB
 int pinR = 25;
-int pinG = 33;
-int pinB = 32;
+int pinG = 32;
+int pinB = 33;
 
 // sensor de pulso
 int pinbat_in = 25; //entrada do cabo para receber os batimentos
