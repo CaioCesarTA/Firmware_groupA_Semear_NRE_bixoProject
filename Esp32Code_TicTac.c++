@@ -10,7 +10,7 @@ Servo pe_direito;
 Servo pe_esquerdo;
 
 
- String cmd;
+String cmd;
 
 //Ultrassônico
 int Trig = 19;
@@ -197,7 +197,6 @@ float medirDistancia() {
   if (distancia < 2.0 || distancia > 400.0) {
       return 0.0;
   }
-  return distancia;
 
   if (distancia < 5){
     peso_na_direita();
@@ -205,6 +204,8 @@ float medirDistancia() {
     peso_na_esquerda();
     delay(100);
   }
+  
+  return distancia;
 }
 
 
