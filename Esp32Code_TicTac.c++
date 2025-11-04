@@ -48,6 +48,7 @@ void setup() {
   rotaquad_direito.write(90);
   pe_esquerdo.write(90);
   pe_direito.write(90);
+  delay(200);
 
 //Sensor Ultrassônico 
   pinMode(Trig, OUTPUT);
@@ -70,18 +71,32 @@ void loop(){
     }
     else if (cmd == "AZUL"){
       pulsaAzul();
+      anda_para_frente();
     }
     else if (cmd == "LARANJA"){
       pulsaLaranja();
+      virar_direita();
+      delay(100);
+      virar_direita();
+      delay(100);
+      virar_direita();
+      delay(100);
     }
     else if (cmd == "VERDE"){
       pulsaVerde();
     }
     else if (cmd == "AMARELO"){
       pulsaAmarelo();
+      parar();
     }
     else if (cmd == "ROSA"){
       pulsaRosa();
+      virar_esquerda();
+      delay(100);
+      virar_esquerda();
+      delay(100);
+      virar_esquerda();
+      delay(100);
     }
   }
 
@@ -154,8 +169,15 @@ void anda_para_frente() {
   delay(200);
   avanca_esquerda();
   delay(200);
-  peso_na_direita();
+  peso_na_esquerda();
   delay(200);
+}
+
+void parar(){
+  peso_na_direita();
+  delay(100);
+  peso_na_esquerda();
+  delay(100);
 }
 
 //curvas
@@ -164,12 +186,20 @@ void virar_direita() {
   delay(100);
   rotaquad_esquerdo.write(70);
   delay(100);
+  rotaquad_direito.write(90);
+  delay(100);
+  rotaquad_esquerdo.write(90);
+  delay(100);
 }
 
 void virar_esquerda() {
   rotaquad_esquerdo.write(110);
   delay(100);
   rotaquad_direito.write(70);
+  delay(100);
+    rotaquad_esquerdo.write(90);
+  delay(100);
+  rotaquad_direito.write(90);
   delay(100);
 }
 
@@ -204,7 +234,7 @@ float medirDistancia() {
     peso_na_esquerda();
     delay(100);
   }
-  
+
   return distancia;
 }
 
@@ -214,7 +244,7 @@ void AtivaPulseSensor(){
 while(cmd != "ROSA"){
       bat_GPIO = analogRead(pinbat_in);
   if (bat_GPIO > bat_lixo){
-    piscaVermelho;
+    piscaVermelho();
   }
 
   if (Serial.available()) cmd = Serial.readStringUntil('\n');
