@@ -1,4 +1,5 @@
 #include <ESP32Servo.h>
+#include <PulseSensorPlayground.h>
 
 
 //definição dos servos
@@ -16,22 +17,36 @@ String cmd;
 int Trig = 19;
 int Echo = 18;
 const float VELOCIDADE_SOM_CM_US = 0.0343; 
-const long MAX_TIMEOUT_US = 25000; 
 
 // RGB
-int pinR = 25;
-int pinG = 32;
+int pinR = 32;
+int pinG = 25;
 int pinB = 33;
 
 // sensor de pulso
+PulseSensorPlayground pulseSensor;
 int pinbat_in = 34; //entrada do cabo para receber os batimentos
 int bat_GPIO;       //variavel do batimento
 int bat_lixo = 550;   //sinal a ser ignorada
-int freq = 5000;  // frequencia de 5000 Hz
-int res = 8;  // resolução de 8 bits
+bool sendPulseSignal = false;
 
 void setup() {
   Serial.begin(115200);
+  // remova isso caso interfira em outras funcionalidades. Adicionei para usar o sensor de pulso
+  analogReadResolution(10);
+  pulseSensor.analogInput(pinbat_in);
+  pulseSensor.blinkOnPulse(pinR);
+  pulseSensor.setSerial(Serial);
+  pulseSensor.setThreshold(bat_lixo);
+  if (!pulseSensor.begin()) {
+    while(1) {
+      // Se der pau no sensor de pulso ele pisca
+      digitalWrite(pinbat_in, LOW);
+      delay(50);
+      digitalWrite(pinbat_in, HIGH);
+      delay(50);
+    }
+  }
 
 //Definição dos pinos dos servos
   levantaquad_esquerdo.attach(12);
@@ -65,15 +80,15 @@ void loop(){
 //Comunicação com a prog
   if (Serial.available()) {
     cmd = Serial.readStringUntil('\n');
-    if (cmd == "VERMELHO") {
+    if (cmd == "Vermelho") {
       pulsaVermelho();
       AtivaPulseSensor();
     }
-    else if (cmd == "AZUL"){
+    else if (cmd == "Azul"){
       pulsaAzul();
       anda_para_frente();
     }
-    else if (cmd == "LARANJA"){
+    else if (cmd == "Laranja"){
       pulsaLaranja();
       virar_direita();
       delay(100);
@@ -82,14 +97,14 @@ void loop(){
       virar_direita();
       delay(100);
     }
-    else if (cmd == "VERDE"){
+    else if (cmd == "Verde"){
       pulsaVerde();
     }
-    else if (cmd == "AMARELO"){
+    else if (cmd == "Amarelo"){
       pulsaAmarelo();
       parar();
     }
-    else if (cmd == "ROSA"){
+    else if (cmd == "Rosa"){
       pulsaRosa();
       virar_esquerda();
       delay(100);
@@ -216,7 +231,7 @@ float medirDistancia() {
   delayMicroseconds(10);
   digitalWrite(Trig, LOW);
 
-  duracao_us = pulseIn(Echo, HIGH, MAX_TIMEOUT_US); 
+  duracao_us = pulseIn(Echo, HIGH); 
 
   if (duracao_us == 0) {
     return 0.0; // Retorna 0.0 para ser tratado como 'Erro' no loop()
@@ -236,6 +251,7 @@ float medirDistancia() {
   }
 
   return distancia;
+  Serial.println(" cm");
 }
 
 
@@ -246,13 +262,23 @@ while(cmd != "ROSA"){
   if (bat_GPIO > bat_lixo){
     piscaVermelho();
   }
+  
+    if (pulseSensor.sawStartOfBeat()) {
+    if(!sendPulseSignal){
+      Serial.print(pulseSensor.getBeatsPerMinute());
+      Serial.println(" bpm");
+      pulsaVermelho();
+    }
+  }
+
+
 
   if (Serial.available()) cmd = Serial.readStringUntil('\n');
   }
 
   digitalWrite(pinR, 0);
   digitalWrite(pinB, 0);
-  pulsaVerde();
+  pulsaAmarelo();
 }
 
 
