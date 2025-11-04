@@ -1,4 +1,5 @@
 #include <ESP32Servo.h>
+#include <PulseSensorPlayground.h>
 
 
 //definição dos servos
@@ -16,22 +17,36 @@ String cmd;
 int Trig = 19;
 int Echo = 18;
 const float VELOCIDADE_SOM_CM_US = 0.0343; 
-const long MAX_TIMEOUT_US = 25000; 
 
 // RGB
-int pinR = 25;
-int pinG = 32;
+int pinR = 32;
+int pinG = 25;
 int pinB = 33;
 
 // sensor de pulso
+PulseSensorPlayground pulseSensor;
 int pinbat_in = 34; //entrada do cabo para receber os batimentos
 int bat_GPIO;       //variavel do batimento
 int bat_lixo = 550;   //sinal a ser ignorada
-int freq = 5000;  // frequencia de 5000 Hz
-int res = 8;  // resolução de 8 bits
+bool sendPulseSignal = false;
 
 void setup() {
   Serial.begin(115200);
+  // remova isso caso interfira em outras funcionalidades. Adicionei para usar o sensor de pulso
+  analogReadResolution(10);
+  pulseSensor.analogInput(pinbat_in);
+  pulseSensor.blinkOnPulse(pinR);
+  pulseSensor.setSerial(Serial);
+  pulseSensor.setThreshold(bat_lixo);
+  if (!pulseSensor.begin()) {
+    while(1) {
+      // Se der pau no sensor de pulso ele pisca
+      digitalWrite(pinbat_in, LOW);
+      delay(50);
+      digitalWrite(pinbat_in, HIGH);
+      delay(50);
+    }
+  }
 
 //Definição dos pinos dos servos
   levantaquad_esquerdo.attach(12);
@@ -213,17 +228,27 @@ float medirDistancia() {
 //funcao para o sensor de pulso
 void AtivaPulseSensor(){
 while(cmd != "Amarelo"){
-      bat_GPIO = analogRead(pinbat_in);
-  if (bat_GPIO > bat_lixo){
-    piscaVermelho;
+  if(sendPulseSignal){
+    delay(20);
+    Serial.println(pulseSensor.getLatestSample());
   }
+  
+    if (pulseSensor.sawStartOfBeat()) {
+    if(!sendPulseSignal){
+      Serial.print(pulseSensor.getBeatsPerMinute());
+      Serial.println(" bpm");
+      pulsaVermelho();
+    }
+  }
+
+
 
   if (Serial.available()) cmd = Serial.readStringUntil('\n');
   }
 
   digitalWrite(pinR, 0);
   digitalWrite(pinB, 0);
-  pulsaVerde();
+  pulsaAmarelo();
 }
 
 
