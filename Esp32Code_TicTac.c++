@@ -64,23 +64,23 @@ void loop(){
 //Comunicação com a prog
   if (Serial.available()) {
     cmd = Serial.readStringUntil('\n');
-    if (cmd == "VERMELHO") {
+    if (cmd == "Vermelho") {
       pulsaVermelho();
       AtivaPulseSensor();
     }
-    else if (cmd == "AZUL"){
+    else if (cmd == "Azul"){
       pulsaAzul();
     }
-    else if (cmd == "LARANJA"){
+    else if (cmd == "Laranja"){
       pulsaLaranja();
     }
-    else if (cmd == "VERDE"){
+    else if (cmd == "Verde"){
       pulsaVerde();
     }
-    else if (cmd == "AMARELO"){
+    else if (cmd == "Amarelo"){
       pulsaAmarelo();
     }
-    else if (cmd == "ROSA"){
+    else if (cmd == "Rosa"){
       pulsaRosa();
     }
   }
@@ -211,7 +211,7 @@ float medirDistancia() {
 
 //funcao para o sensor de pulso
 void AtivaPulseSensor(){
-while(cmd != "ROSA"){
+while(cmd != "Amarelo"){
       bat_GPIO = analogRead(pinbat_in);
   if (bat_GPIO > bat_lixo){
     piscaVermelho;
