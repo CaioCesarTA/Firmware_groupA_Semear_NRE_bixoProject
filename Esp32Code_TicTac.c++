@@ -186,7 +186,7 @@ float medirDistancia() {
   delayMicroseconds(10);
   digitalWrite(Trig, LOW);
 
-  duracao_us = pulseIn(Echo, HIGH, MAX_TIMEOUT_US); 
+  duracao_us = pulseIn(Echo, HIGH); 
 
   if (duracao_us == 0) {
     return 0.0; // Retorna 0.0 para ser tratado como 'Erro' no loop()
@@ -206,6 +206,7 @@ float medirDistancia() {
   }
   
   return distancia;
+  Serial.println(" cm");
 }
 
 
