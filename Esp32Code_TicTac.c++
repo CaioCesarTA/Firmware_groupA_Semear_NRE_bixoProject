@@ -34,6 +34,7 @@ int pinbat_in = 34; //entrada do cabo para receber os batimentos
 int bat_GPIO;       //variavel do batimento
 int bat_lixo = 2200;   //sinal a ser ignorada
 bool sendPulseSignal = false;
+int intervalo;
 
 void setup() {
   Serial.begin(115200);
@@ -42,15 +43,6 @@ void setup() {
   pulseSensor.blinkOnPulse(pinR);
   pulseSensor.setSerial(Serial);
   pulseSensor.setThreshold(bat_lixo);
-  if (!pulseSensor.begin()) {
-    while(1) {
-      // Se der pau no sensor de pulso ele pisca
-      digitalWrite(pinbat_in, LOW);
-      delay(50);
-      digitalWrite(pinbat_in, HIGH);
-      delay(50);
-    }
-  }
 
 //Definição dos pinos dos servos
   levantaquad_esquerdo.attach(12);
@@ -259,19 +251,25 @@ float medirDistancia() {
 //funcao para o sensor de pulso
 void AtivaPulseSensor(){
 while(cmd != "Amarelo"){
-if(sendPulseSignal){
+  if(sendPulseSignal){
     delay(20);
     Serial.println(pulseSensor.getLatestSample());
   }
-  
-    if (pulseSensor.sawStartOfBeat()) {
+
+  if (pulseSensor.sawStartOfBeat()) {
     if(!sendPulseSignal){
-      Serial.print(pulseSensor.getBeatsPerMinute());
+      bat_GPIO = pulseSensor.getBeatsPerMinute();
+      if (bat_GPIO >= 120) Serial.print("120");
+      else if (bat_GPIO <= 80) Serial.print("80");
+      else if (bat_GPIO <= 120 && bat_GPIO >= 80) Serial.print(bat_GPIO);
       Serial.println(" bpm");
-      pulsaVermelho();
     }
   }
-}
+  intervalo = (60000 / bat_GPIO) / 2;
+  digitalWrite(pinR, HIGH);
+  delay(intervalo);
+  digitalWrite(pinR, LOW);
+  delay(intervalo);
 
 
 
