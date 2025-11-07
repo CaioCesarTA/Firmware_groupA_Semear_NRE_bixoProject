@@ -16,12 +16,17 @@ String cmd;
 //Ultrassônico
 int Trig = 19;
 int Echo = 18;
-const float VELOCIDADE_SOM_CM_US = 0.0343; 
+const float VELOCIDADE_SOM_CM_US = 0.0343;
+long duracao_us = 0; 
+float distancia = 0;
 
 // RGB
-int pinR = 32;
-int pinG = 25;
+int pinR = 25;
+int pinG = 32;
 int pinB = 33;
+int vermelho = 0;
+int verde = 0;
+int Azul = 0;
 
 // sensor de pulso
 PulseSensorPlayground pulseSensor;
@@ -33,8 +38,8 @@ bool sendPulseSignal = false;
 void setup() {
   Serial.begin(115200);
   // remova isso caso interfira em outras funcionalidades. Adicionei para usar o sensor de pulso
-  analogReadResolution(10);
-  pulseSensor.analogInput(pinbat_in);
+  //analogReadResolution(10);
+/*  pulseSensor.analogInput(pinbat_in);
   pulseSensor.blinkOnPulse(pinR);
   pulseSensor.setSerial(Serial);
   pulseSensor.setThreshold(bat_lixo);
@@ -46,7 +51,7 @@ void setup() {
       digitalWrite(pinbat_in, HIGH);
       delay(50);
     }
-  }
+  }/**/
 
 //Definição dos pinos dos servos
   levantaquad_esquerdo.attach(12);
@@ -221,9 +226,6 @@ void virar_esquerda() {
 
 // sensor ultrassônico
 float medirDistancia() {
-  long duracao_us; 
-  float distancia;
-
 
   digitalWrite(Trig, LOW);
   delayMicroseconds(2);
@@ -257,7 +259,7 @@ float medirDistancia() {
 
 //funcao para o sensor de pulso
 void AtivaPulseSensor(){
-while(cmd != "ROSA"){
+while(cmd != "Amarelo"){
       bat_GPIO = analogRead(pinbat_in);
   if (bat_GPIO > bat_lixo){
     piscaVermelho();
@@ -293,7 +295,6 @@ analogWrite(pinR, 0);
 }
 //funções do LED
 void pulsaVermelho() {
-  int vermelho;
 
   for (int i = 0; i <= 255; i++) {
     vermelho = i;
@@ -316,7 +317,6 @@ void pulsaVermelho() {
 }
 
 void pulsaVerde() {
-  int verde;
 
   for (int i = 0; i <= 255; i++) {
     verde = i;
@@ -338,7 +338,6 @@ void pulsaVerde() {
 }
   
 void pulsaAzul() {
-  int Azul;
 
   for (int i = 0; i <= 255; i++) {
     Azul = i;
@@ -360,7 +359,6 @@ void pulsaAzul() {
 }
 
 void pulsaLaranja() {
-  int vermelho, verde;
 
   for (int i = 0; i <= 255; i++) {
     vermelho = i;           
@@ -384,7 +382,6 @@ void pulsaLaranja() {
 }
 
 void pulsaAmarelo() {
-  int vermelho, verde;
 
   for (int i = 0; i <= 255; i++) {
     vermelho = i;        
@@ -406,22 +403,21 @@ void pulsaAmarelo() {
 }
 
 void pulsaRosa() {
-  int vermelho, azul;
 
   for (int i = 0; i <= 255; i++) {
     vermelho = i;          
-    azul = i * 0.6;        
+    Azul = i * 0.6;        
     analogWrite(pinR, vermelho);
-    analogWrite(pinB, azul);
+    analogWrite(pinB, Azul);
     analogWrite(pinG, 0);  
     delay(10);
   }
 
   for (int i = 255; i >= 0; i--) {
     vermelho = i;
-    azul = i * 0.6;
+    Azul = i * 0.6;
     analogWrite(pinR, vermelho);
-    analogWrite(pinB, azul);
+    analogWrite(pinB, Azul);
     analogWrite(pinG, 0);
     delay(10);
   }
