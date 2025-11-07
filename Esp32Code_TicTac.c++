@@ -110,18 +110,6 @@ void loop(){
       delay(100);
     }
   }
-
-//Ultrassônico
-  float Distancia = medirDistancia(); 
-
-  Serial.print("Distância: ");
-  
-  if (Distancia > 0) {
-    Serial.print(Distancia);
-    Serial.println(" cm");
-  } else {
-    Serial.println("Erro");
-  }
 }
 
 //Código para andar 
@@ -174,6 +162,19 @@ void peso_na_direita(){
 }
 
 void anda_para_frente() {
+  while(cmd != "Amarelo"){
+  float Distancia = medirDistancia(); 
+
+  Serial.print("Distância: ");
+  Serial.print(Distancia);
+  Serial.println(" cm");
+  
+  if (Distancia < 5) {
+    parar();
+    pulsaAmarelo();
+    break;
+  }
+
   avanca_direita();
   delay(200);
   peso_na_direita();
@@ -182,6 +183,9 @@ void anda_para_frente() {
   delay(200);
   peso_na_esquerda();
   delay(200);
+    if (Serial.available()) cmd = Serial.readStringUntil('\n');
+  }
+  pulsaAmarelo();
 }
 
 void parar(){
@@ -231,20 +235,7 @@ float medirDistancia() {
   }
 
   distancia = (duracao_us * VELOCIDADE_SOM_CM_US) / 2;
-
-  if (distancia < 2.0 || distancia > 400.0) {
-      return 0.0;
-  }
-
-  if (distancia < 5){
-    peso_na_direita();
-    delay(100);
-    peso_na_esquerda();
-    delay(100);
-  }
-
   return distancia;
-  Serial.println(" cm");
 }
 
 
