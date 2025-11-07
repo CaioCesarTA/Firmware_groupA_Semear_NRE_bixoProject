@@ -32,14 +32,13 @@ int Azul = 0;
 PulseSensorPlayground pulseSensor;
 int pinbat_in = 34; //entrada do cabo para receber os batimentos
 int bat_GPIO;       //variavel do batimento
-int bat_lixo = 550;   //sinal a ser ignorada
+int bat_lixo = 2200;   //sinal a ser ignorada
 bool sendPulseSignal = false;
 
 void setup() {
   Serial.begin(115200);
   // remova isso caso interfira em outras funcionalidades. Adicionei para usar o sensor de pulso
-  //analogReadResolution(10);
-/*  pulseSensor.analogInput(pinbat_in);
+  pulseSensor.analogInput(pinbat_in);
   pulseSensor.blinkOnPulse(pinR);
   pulseSensor.setSerial(Serial);
   pulseSensor.setThreshold(bat_lixo);
@@ -51,7 +50,7 @@ void setup() {
       digitalWrite(pinbat_in, HIGH);
       delay(50);
     }
-  }/**/
+  }
 
 //Definição dos pinos dos servos
   levantaquad_esquerdo.attach(12);
@@ -260,9 +259,9 @@ float medirDistancia() {
 //funcao para o sensor de pulso
 void AtivaPulseSensor(){
 while(cmd != "Amarelo"){
-      bat_GPIO = analogRead(pinbat_in);
-  if (bat_GPIO > bat_lixo){
-    piscaVermelho();
+if(sendPulseSignal){
+    delay(20);
+    Serial.println(pulseSensor.getLatestSample());
   }
   
     if (pulseSensor.sawStartOfBeat()) {
@@ -272,6 +271,7 @@ while(cmd != "Amarelo"){
       pulsaVermelho();
     }
   }
+}
 
 
 
@@ -362,7 +362,7 @@ void pulsaLaranja() {
 
   for (int i = 0; i <= 255; i++) {
     vermelho = i;           
-    verde = i * 0.5;        
+    verde = i * 0.25;        
 
     analogWrite(pinR, vermelho);
     analogWrite(pinG, verde);
@@ -372,7 +372,7 @@ void pulsaLaranja() {
 
   for (int i = 255; i >= 0; i--) {
     vermelho = i;
-    verde = i * 0.5;
+    verde = i * 0.25;
 
     analogWrite(pinR, vermelho);
     analogWrite(pinG, verde);
