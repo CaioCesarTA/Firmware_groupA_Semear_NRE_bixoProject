@@ -129,14 +129,14 @@ void avanca_direita() {
   delay(1000);
   pe_direito.write(110);//abaixa o pé
   delay(2000);
-  pe_esquerdo.write(110);
+  pe_esquerdo.write(110);//levanta o pé
   delay(10);
   levantaquad_esquerdo.write(70);// perna para trás
   delay(1000);
 }
 
 void peso_na_esquerda(){
-  pe_direito.write(110);
+  pe_direito.write(110);//avança pé na parte de trás
   delay(1000);
   pe_esquerdo.write(90);
   delay(10);
@@ -212,7 +212,7 @@ void virar_esquerda() {
   delay(100);
   rotaquad_direito.write(70);
   delay(100);
-    rotaquad_esquerdo.write(90);
+  rotaquad_esquerdo.write(90);
   delay(100);
   rotaquad_direito.write(90);
   delay(100);
