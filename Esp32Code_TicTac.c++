@@ -114,30 +114,30 @@ void loop(){
 
 //Código para andar 
 void avanca_esquerda() {
-  levantaquad_esquerdo.write(110);//levanta o quadril 
-  delay(1000);
-  pe_esquerdo.write(70);//abaixa o pé
-  delay(2000);
-  pe_direito.write(70); //levanta o pé
+  levantaquad_esquerdo.write(180);//levanta o quadril 
+  delay(100);
+  pe_esquerdo.write(0);//abaixa o pé
+  delay(200);
+  pe_direito.write(0); //levanta o pé
   delay(10);
-  levantaquad_direito.write(110);//perna para trás
-  delay(1000);
+  levantaquad_direito.write(180);//perna para trás
+  delay(100);
 }
 
 void avanca_direita() {
-  levantaquad_direito.write(70);//levanta o quadril
-  delay(1000);
-  pe_direito.write(110);//abaixa o pé
-  delay(2000);
-  pe_esquerdo.write(110);//levanta o pé
+  levantaquad_direito.write(0);//levanta o quadril
+  delay(100);
+  pe_direito.write(180);//abaixa o pé
+  delay(200);
+  pe_esquerdo.write(180);//levanta o pé
   delay(10);
-  levantaquad_esquerdo.write(70);// perna para trás
-  delay(1000);
+  levantaquad_esquerdo.write(0);// perna para trás
+  delay(100);
 }
 
 void peso_na_esquerda(){
-  pe_direito.write(110);//avança pé na parte de trás
-  delay(1000);
+  pe_direito.write(180);//avança pé na parte de trás
+  delay(100);
   pe_esquerdo.write(90);
   delay(10);
   levantaquad_esquerdo.write(90);//joga o peso para a perna esquerda
@@ -149,8 +149,8 @@ void peso_na_esquerda(){
 }
 
 void peso_na_direita(){
-  pe_esquerdo.write(70);
-  delay(1000);
+  pe_esquerdo.write(0);
+  delay(100);
   pe_direito.write(90);
   delay(10);
   levantaquad_direito.write(90);//joga o peso para a perna esquerda
@@ -197,9 +197,9 @@ void parar(){
 
 //curvas
 void virar_direita() {
-  rotaquad_direito.write(110);
+  rotaquad_direito.write(180);
   delay(100);
-  rotaquad_esquerdo.write(70);
+  rotaquad_esquerdo.write(0);
   delay(100);
   rotaquad_direito.write(90);
   delay(100);
@@ -208,9 +208,9 @@ void virar_direita() {
 }
 
 void virar_esquerda() {
-  rotaquad_esquerdo.write(110);
+  rotaquad_esquerdo.write(180);
   delay(100);
-  rotaquad_direito.write(70);
+  rotaquad_direito.write(0);
   delay(100);
   rotaquad_esquerdo.write(90);
   delay(100);
