@@ -205,10 +205,22 @@ while(cmd != "Amarelo"){
   if (cmd == "Amarelo")  || (distancia < 5){
   parar();
   return;
+    }
+  }
 }
 
 //Código para andar 
 void avanca_esquerda() {
+  delay(100);
+  quadril_esquerdo.write(90 - 15);
+  delay(100);
+  quadril_direito.write(90 - 15);
+  delay(100);
+  quadril_esquerdo.write(90);
+  delay(100);
+  quadril_direito.write(90);
+  delay(100);
+
     cmd = "";
     nh.spinOnce();
     vTaskDelay(5 / portTICK_PERIOD_MS);
@@ -216,9 +228,18 @@ void avanca_esquerda() {
     if (cmd == "Amarelo") || (distancia < 5){
     parar();
     return;
+    }
 }
 
 void avanca_direita() {
+  delay(100);
+  quadril_direito.write(90 + 15);
+  delay(100);
+  quadril_esquerdo.write(90 - 15);
+  delay(100);
+  quadril_direito.write(90);
+  delay(100);
+  quadril_esquerdo.write(90);
       cmd = "";
       nh.spinOnce();
     vTaskDelay(5 / portTICK_PERIOD_MS);
@@ -226,6 +247,7 @@ void avanca_direita() {
     if (cmd == "Amarelo")  || (distancia < 5){
       parar();
       return;
+    }
 }
 
 void anda_para_frente() {
@@ -236,6 +258,7 @@ void anda_para_frente() {
     if (cmd == "Amarelo") || (distancia < 5){
       parar();
       return;
+    }
 }
 
 void parar(){
