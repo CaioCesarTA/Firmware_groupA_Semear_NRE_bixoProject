@@ -14,6 +14,13 @@ void rosCallback(const std_msgs::String& msg);
 // Subscriber
 ros::Subscriber<std_msgs::String> sub("color_detected", &rosCallback);
 
+// Callback 2 do ROS
+void rosCallback_2(const std_msgs::String& msg);
+
+// Subscriber
+ros::Subscriber<std_msgs::String> sub("comandos", &rosCallback_2);
+
+
 //mensagem
 String cmd = "";
 
@@ -77,30 +84,33 @@ void taskPrincipal(void *pvParameters) {
   for (;;) {
     nh.spinOnce();
     
-  if (cmd == "Vermelho") {
+  if (cmd == "Vermelho"|| cmd == "PARAR"){  
     pulsaVermelho();
     parar();
   }
-  else if (cmd == "Azul") {
+  else if (cmd == "Azul"|| cmd == "DIREITA") {
     pulsaAzul();
     avanca_direita();
   }
-  else if (cmd == "Laranja") {
+  else if (cmd == "Laranja" || cmd == "FRENTE"){
     pulsaLaranja();
-    avanca_direita();
+    anda_para_frente();
   }
-  else if (cmd == "Verde") {
+  else if (cmd == "Verde" || cmd == "DESATIVAR"){
     pulsaVerde();
-    Samba();
   }
   else if (cmd == "Amarelo") {
-     //AtivaPulseSensor();
+    pulsaAmarelo();
+  AtivaPulseSensor();
   }
-  else if (cmd == "Rosa") {
+  else if (cmd == "Rosa") || cmd == "FRENTE"){
     pulsaRosa();
     avanca_esquerda();
   }
-    vTaskDelay(20 / portTICK_PERIOD_MS); // evita travar o núcleo
+  else if (cmd == "SAMBA" || cmd == "PRESIDENTE"){
+    Samba();
+  }
+    vTaskDelay(10 / portTICK_PERIOD_MS); // evita travar o núcleo
   }
 }
 
@@ -129,9 +139,10 @@ void setup() {
   joelho_esquerdo.attach(13);
 
 
-  quadril_direito.write(90);
+
+  quadril_direito.write(85);
   quadril_esquerdo.write(80);
-  pe_direito.write(90);
+  pe_direito.write(95);
   pe_esquerdo.write(90);
   joelho_direito.write(90);
   joelho_esquerdo.write(95);
@@ -174,6 +185,13 @@ void rosCallback(const std_msgs::String& msg) {
 nh.loginfo(msg.data);
 }
 
+//CALLBACK 2 DO ROS
+void rosCallback_2(const std_msgs::String& msg) {
+  cmd = msg.data; 
+nh.loginfo(msg.data);
+}
+
+
 //funcao para o sensor de pulso
 void AtivaPulseSensor(){
 while(cmd != "Vermelho"){
@@ -185,10 +203,15 @@ while(cmd != "Vermelho"){
   if (pulseSensor.sawStartOfBeat()) {
     if(!sendPulseSignal){
       bat_GPIO = pulseSensor.getBeatsPerMinute();
-      if (bat_GPIO >= 120) Serial.print("120");
-      else if (bat_GPIO <= 80) Serial.print("80");
+      if (bat_GPIO >= 120) {
+        Serial.print("120");
+      bat_GPIO = 120;
+    }
+      else if (bat_GPIO <= 80){
+      Serial.print("80");
+      bat_GPIO = 80;
+      }
       else if (bat_GPIO <= 120 && bat_GPIO >= 80) Serial.print(bat_GPIO);
-      Serial.println(" bpm");
     }
   }
 if (bat_GPIO < 40) bat_GPIO = 40;
@@ -205,6 +228,7 @@ if (cmd == "Vermelho" || distancia < 5) {
     }
   }
 }
+
 //funcao que danca
 void Samba(){
     while(1){
@@ -226,32 +250,32 @@ void Samba(){
       vTaskDelay(100 / portTICK_PERIOD_MS);
 
     nh.spinOnce();
-if (cmd == "Vermelho" || distancia < 5) {
+if (cmd == "Vermelho" || distancia < 5 || cmd == "FRENTE") {
     parar();
     return;
-}
+      }
     }
 }
 
 //Código para andar 
 void avanca_esquerda() {
-    while(1){
-      vTaskDelay(100 / portTICK_PERIOD_MS);
+  while(1){
+  vTaskDelay(100 / portTICK_PERIOD_MS);
   quadril_esquerdo.write(80 - 15);
-      vTaskDelay(100 / portTICK_PERIOD_MS);
+  vTaskDelay(100 / portTICK_PERIOD_MS);
   quadril_direito.write(90 - 15);
-      vTaskDelay(100 / portTICK_PERIOD_MS);
+  vTaskDelay(100 / portTICK_PERIOD_MS);
   quadril_esquerdo.write(80);
-      vTaskDelay(100 / portTICK_PERIOD_MS);
+  vTaskDelay(100 / portTICK_PERIOD_MS);
   quadril_direito.write(90);
-      vTaskDelay(100 / portTICK_PERIOD_MS);
+  vTaskDelay(100 / portTICK_PERIOD_MS);
 
-nh.spinOnce();
-if (cmd == "Vermelho" || distancia < 5) {
+  nh.spinOnce();
+  if (cmd == "Vermelho" || distancia < 5|| cmd == "FRENTE") {
     parar();
     return;
-}
-}
+    }
+  }
 }
 
 void avanca_direita() {
@@ -264,7 +288,7 @@ void avanca_direita() {
       vTaskDelay(100 / portTICK_PERIOD_MS);
   quadril_esquerdo.write(80);
 nh.spinOnce();
-if (cmd == "Vermelho" || distancia < 5) {
+if (cmd == "Vermelho" || distancia < 5|| cmd == "FRENTE") {
     parar();
     return;
     }
@@ -273,26 +297,34 @@ if (cmd == "Vermelho" || distancia < 5) {
 
 void anda_para_frente() {
     while(1){
-vTaskDelay(200 / portTICK_PERIOD_MS);
-  pe_direito.write(95 - 10);
-  joelho_direito.write(90 + 10);
-vTaskDelay(200 / portTICK_PERIOD_MS);
-  pe_esquerdo.write(90 - 15);
-  joelho_esquerdo.write(95 + 10);
-vTaskDelay(200 / portTICK_PERIOD_MS);
-  pe_direito.write(95);
+  joelho_direito.write(90 + 20);
+  pe_direito.write(95 - 20);
+      vTaskDelay(200 / portTICK_PERIOD_MS);
+  joelho_esquerdo.write(95 - 20); 
+  pe_esquerdo.write(90 + 20);
+      vTaskDelay(200 / portTICK_PERIOD_MS);
   joelho_direito.write(90);
-vTaskDelay(200 / portTICK_PERIOD_MS);
-  pe_esquerdo.write(90 + 10);
-  joelho_esquerdo.write(95 - 10);
-vTaskDelay(200 / portTICK_PERIOD_MS);
-  pe_direito.write(95 + 15);
-  joelho_direito.write(90 - 10);
-vTaskDelay(200 / portTICK_PERIOD_MS);
+  pe_direito.write(95);
+      vTaskDelay(200 / portTICK_PERIOD_MS);
+  joelho_esquerdo.write(95); 
   pe_esquerdo.write(90);
-  joelho_esquerdo.write(90);
+      vTaskDelay(200 / portTICK_PERIOD_MS);
+  
+  joelho_esquerdo.write(95 - 20); 
+  pe_esquerdo.write(90 + 20);
+      vTaskDelay(200 / portTICK_PERIOD_MS);
+  joelho_direito.write(90 + 20);
+  pe_direito.write(95 - 20);
+      vTaskDelay(200 / portTICK_PERIOD_MS);
+  joelho_esquerdo.write(95); 
+  pe_esquerdo.write(90);
+      vTaskDelay(200 / portTICK_PERIOD_MS);
+  joelho_direito.write(90);
+  pe_direito.write(95);
+      vTaskDelay(200 / portTICK_PERIOD_MS);
+
 nh.spinOnce();
-if (cmd == "Vermelho" || distancia < 5) {
+if (cmd == "Vermelho" || distancia < 5|| cmd == "FRENTE") {
     parar();
     return;
     }
@@ -364,15 +396,11 @@ void pulsaLaranja() {
 
 void pulsaAmarelo() {
   for (int i = 0; i <= 255; i++) {
-    analogWrite(pinR, i);
-    analogWrite(pinG, i);
-    analogWrite(pinB, 0);
+    analogWrite(pinR, i); analogWrite(pinG, i); analogWrite(pinB, 0);
     vTaskDelay(10 / portTICK_PERIOD_MS);
   }
   for (int i = 255; i >= 0; i--) {
-    analogWrite(pinR, i);
-    analogWrite(pinG, i);
-    analogWrite(pinB, 0);
+    analogWrite(pinR, i); analogWrite(pinG, i); analogWrite(pinB, 0);
     vTaskDelay(10 / portTICK_PERIOD_MS);
   }
 }
