@@ -40,7 +40,7 @@ int intervalo;
 int pinR = 32;
 int pinG = 33;
 int pinB = 25;
-int vermelho = 0;
+int vermelho = 0; 
 int verde = 0;
 int Azul = 0;
 
@@ -76,6 +76,30 @@ void taskUltrassonico(void *pvParameters) {
 void taskPrincipal(void *pvParameters) {
   for (;;) {
     nh.spinOnce();
+    
+  if (cmd == "Vermelho") {
+    pulsaVermelho();
+    parar();
+  }
+  else if (cmd == "Azul") {
+    pulsaAzul();
+    avanca_direita();
+  }
+  else if (cmd == "Laranja") {
+    pulsaLaranja();
+    avanca_direita();
+  }
+  else if (cmd == "Verde") {
+    pulsaVerde();
+    Samba();
+  }
+  else if (cmd == "Amarelo") {
+     //AtivaPulseSensor();
+  }
+  else if (cmd == "Rosa") {
+    pulsaRosa();
+    avanca_esquerda();
+  }
     vTaskDelay(20 / portTICK_PERIOD_MS); // evita travar o núcleo
   }
 }
@@ -106,11 +130,11 @@ void setup() {
 
 
   quadril_direito.write(90);
-  quadril_esquerdo.write(90);
+  quadril_esquerdo.write(80);
   pe_direito.write(90);
   pe_esquerdo.write(90);
   joelho_direito.write(90);
-  joelho_esquerdo.write(90);
+  joelho_esquerdo.write(95);
   delay(5000);
 
   // LEDs
@@ -147,37 +171,14 @@ void loop() {
 //CALLBACK DO ROS
 void rosCallback(const std_msgs::String& msg) {
   cmd = msg.data; 
-  nh.loginfo(msg.data);
-
-  if (cmd == "Vermelho") {
-    pulsaVermelho();
-    AtivaPulseSensor();
-  }
-  else if (cmd == "Azul") {
-    pulsaAzul();
-    anda_para_frente();
-  }
-  else if (cmd == "Laranja") {
-    pulsaLaranja();
-    avanca_direita();
-  }
-  else if (cmd == "Verde") {
-    pulsaVerde();
-  }
-  else if (cmd == "Amarelo") {
-    parar();
-  }
-  else if (cmd == "Rosa") {
-    pulsaRosa();
-    avanca_direita();
-  }
+nh.loginfo(msg.data);
 }
 
 //funcao para o sensor de pulso
 void AtivaPulseSensor(){
-while(cmd != "Amarelo"){
+while(cmd != "Vermelho"){
   if(sendPulseSignal){
-    delay(20);
+      vTaskDelay(20 / portTICK_PERIOD_MS);
     Serial.println(pulseSensor.getLatestSample());
   }
 
@@ -190,84 +191,123 @@ while(cmd != "Amarelo"){
       Serial.println(" bpm");
     }
   }
-  intervalo = (60000 / bat_GPIO) / 2;
+if (bat_GPIO < 40) bat_GPIO = 40;
+intervalo = (60000 / bat_GPIO) / 2;
   digitalWrite(pinR, HIGH);
-  delay(intervalo);
+      vTaskDelay(intervalo / portTICK_PERIOD_MS);
   digitalWrite(pinR, LOW);
-  delay(intervalo);
+      vTaskDelay(intervalo / portTICK_PERIOD_MS);
 
-  cmd = "";
-  nh.spinOnce();
-  vTaskDelay(5 / portTICK_PERIOD_MS);
-  // AQUI verifica somente o comando específico
- if ((cmd == "Amarelo") || (distancia < 5)){
-  parar();
-  return;
+nh.spinOnce();
+if (cmd == "Vermelho" || distancia < 5) {
+    parar();
+    return;
     }
   }
+}
+//funcao que danca
+void Samba(){
+    while(1){
+  pe_direito.write(90 - 10);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  joelho_direito.write(90 + 10);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  pe_esquerdo.write(90 - 10);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  joelho_esquerdo.write(90 + 10);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  pe_direito.write(90);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  joelho_direito.write(90);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  pe_esquerdo.write(90);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  joelho_esquerdo.write(90);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+
+    nh.spinOnce();
+if (cmd == "Vermelho" || distancia < 5) {
+    parar();
+    return;
+}
+    }
 }
 
 //Código para andar 
 void avanca_esquerda() {
-  delay(100);
-  quadril_esquerdo.write(90 - 15);
-  delay(100);
+    while(1){
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  quadril_esquerdo.write(80 - 15);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
   quadril_direito.write(90 - 15);
-  delay(100);
-  quadril_esquerdo.write(90);
-  delay(100);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  quadril_esquerdo.write(80);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
   quadril_direito.write(90);
-  delay(100);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
 
-    cmd = "";
-    nh.spinOnce();
-    vTaskDelay(5 / portTICK_PERIOD_MS);
-    // AQUI verifica somente o comando específico
-    if ((cmd == "Amarelo") || (distancia < 5)){
+nh.spinOnce();
+if (cmd == "Vermelho" || distancia < 5) {
+    parar();
+    return;
+}
+}
+}
+
+void avanca_direita() {
+  while(1){
+  quadril_direito.write(90 + 15);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  quadril_esquerdo.write(80 + 15);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  quadril_direito.write(90);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  quadril_esquerdo.write(80);
+nh.spinOnce();
+if (cmd == "Vermelho" || distancia < 5) {
+    parar();
+    return;
+    }
+  }
+}
+
+void anda_para_frente() {
+    while(1){
+vTaskDelay(200 / portTICK_PERIOD_MS);
+  pe_direito.write(95 - 10);
+  joelho_direito.write(90 + 10);
+vTaskDelay(200 / portTICK_PERIOD_MS);
+  pe_esquerdo.write(90 - 15);
+  joelho_esquerdo.write(95 + 10);
+vTaskDelay(200 / portTICK_PERIOD_MS);
+  pe_direito.write(95);
+  joelho_direito.write(90);
+vTaskDelay(200 / portTICK_PERIOD_MS);
+  pe_esquerdo.write(90 + 10);
+  joelho_esquerdo.write(95 - 10);
+vTaskDelay(200 / portTICK_PERIOD_MS);
+  pe_direito.write(95 + 15);
+  joelho_direito.write(90 - 10);
+vTaskDelay(200 / portTICK_PERIOD_MS);
+  pe_esquerdo.write(90);
+  joelho_esquerdo.write(90);
+nh.spinOnce();
+if (cmd == "Vermelho" || distancia < 5) {
     parar();
     return;
     }
 }
-
-void avanca_direita() {
-  delay(100);
-  quadril_direito.write(90 + 15);
-  delay(100);
-  quadril_esquerdo.write(90 - 15);
-  delay(100);
-  quadril_direito.write(90);
-  delay(100);
-  quadril_esquerdo.write(90);
-      cmd = "";
-      nh.spinOnce();
-    vTaskDelay(5 / portTICK_PERIOD_MS);
-    // AQUI verifica somente o comando específico
- if ((cmd == "Amarelo") || (distancia < 5)){
-      parar();
-      return;
-    }
-}
-
-void anda_para_frente() {
-      cmd = "";
-      nh.spinOnce();
-    vTaskDelay(5 / portTICK_PERIOD_MS);
-    // AQUI verifica somente o comando específico
- if ((cmd == "Amarelo") || (distancia < 5)){
-      parar();
-      return;
-    }
 }
 
 void parar(){
-  pulsaAmarelo();
+  pulsaVermelho(); 
   quadril_direito.write(90);
   quadril_esquerdo.write(90);
   pe_direito.write(90);
   pe_esquerdo.write(90);
   joelho_direito.write(90);
   joelho_esquerdo.write(90);
-  delay(1000);
+vTaskDelay(200 / portTICK_PERIOD_MS);
 }
 
 void piscaVermelho(){
@@ -324,16 +364,20 @@ void pulsaLaranja() {
 
 void pulsaAmarelo() {
   for (int i = 0; i <= 255; i++) {
-    analogWrite(pinR, i); analogWrite(pinG, i); analogWrite(pinB, 0);
+    analogWrite(pinR, i);
+    analogWrite(pinG, i);
+    analogWrite(pinB, 0);
     vTaskDelay(10 / portTICK_PERIOD_MS);
   }
   for (int i = 255; i >= 0; i--) {
-    analogWrite(pinR, i); analogWrite(pinG, 0); analogWrite(pinB, 0);
+    analogWrite(pinR, i);
+    analogWrite(pinG, i);
+    analogWrite(pinB, 0);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
   }
 }
 
 void pulsaRosa() {
-
   for (int i = 0; i <= 255; i++) {
     vermelho = i;          
     Azul = i * 0.6;        
