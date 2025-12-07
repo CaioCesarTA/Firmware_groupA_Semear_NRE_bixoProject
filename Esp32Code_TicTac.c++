@@ -15,15 +15,15 @@ void rosCallback(const std_msgs::String& msg);
 ros::Subscriber<std_msgs::String> sub("color_detected", &rosCallback);
 
 //mensagem
-volatile String cmd = "";
+String cmd = "";
 
 // Servos
-Servo levantaquad_esquerdo;
-Servo pe_esquerdo;
-Servo levantaquad_direito;
+Servo quadril_direito;
+Servo quadril_esquerdo;
 Servo pe_direito;
-Servo rotaquad_direito;
-Servo rotaquad_esquerdo;
+Servo pe_esquerdo;
+Servo joelho_direito;
+Servo joelho_esquerdo;
 
 // Ultrassônico
 int Trig = 19;
@@ -97,15 +97,21 @@ void setup() {
   pulseSensor.setThreshold(bat_lixo);
 
   // Servos
-  levantaquad_esquerdo.attach(12);
-  pe_esquerdo.attach(14);
-  levantaquad_direito.attach(22);
+  quadril_direito.attach(22);
+  quadril_esquerdo.attach(12);
   pe_direito.attach(26);
-  levantaquad_esquerdo.write(10);
+  pe_esquerdo.attach(14);
+  joelho_direito.attach(23);
+  joelho_esquerdo.attach(13);
+
+
+  quadril_direito.write(90);
+  quadril_esquerdo.write(90);
+  pe_direito.write(90);
   pe_esquerdo.write(90);
-  levantaquad_direito.write(130);
-  pe_direito.write(25);
-  delay(200);
+  joelho_direito.write(90);
+  joelho_esquerdo.write(90);
+  delay(5000);
 
   // LEDs
   pinMode(pinR, OUTPUT);
@@ -133,14 +139,6 @@ void setup() {
     &TaskPrincipal,
     1
   );
-
-//posicao padrao dos servos
-  levantaquad_esquerdo.write(90);
- pe_esquerdo.write(90);
- levantaquad_direito.write(90);
- pe_direito.weite(90);
- rotaquad_direito.write(90);
- rotaquad_esquerdo.write(90);
 }
 
 void loop() {
@@ -202,7 +200,7 @@ while(cmd != "Amarelo"){
   nh.spinOnce();
   vTaskDelay(5 / portTICK_PERIOD_MS);
   // AQUI verifica somente o comando específico
-  if (cmd == "Amarelo")  || (distancia < 5){
+ if ((cmd == "Amarelo") || (distancia < 5)){
   parar();
   return;
     }
@@ -225,7 +223,7 @@ void avanca_esquerda() {
     nh.spinOnce();
     vTaskDelay(5 / portTICK_PERIOD_MS);
     // AQUI verifica somente o comando específico
-    if (cmd == "Amarelo") || (distancia < 5){
+    if ((cmd == "Amarelo") || (distancia < 5)){
     parar();
     return;
     }
@@ -244,7 +242,7 @@ void avanca_direita() {
       nh.spinOnce();
     vTaskDelay(5 / portTICK_PERIOD_MS);
     // AQUI verifica somente o comando específico
-    if (cmd == "Amarelo")  || (distancia < 5){
+ if ((cmd == "Amarelo") || (distancia < 5)){
       parar();
       return;
     }
@@ -255,7 +253,7 @@ void anda_para_frente() {
       nh.spinOnce();
     vTaskDelay(5 / portTICK_PERIOD_MS);
     // AQUI verifica somente o comando específico
-    if (cmd == "Amarelo") || (distancia < 5){
+ if ((cmd == "Amarelo") || (distancia < 5)){
       parar();
       return;
     }
@@ -263,13 +261,13 @@ void anda_para_frente() {
 
 void parar(){
   pulsaAmarelo();
- levantaquad_esquerdo.write(90);
- pe_esquerdo.write(90);
- levantaquad_direito.write(90);
- pe_direito.weite(90);
- rotaquad_direito.write(90);
- rotaquad_esquerdo.write(90);
-
+  quadril_direito.write(90);
+  quadril_esquerdo.write(90);
+  pe_direito.write(90);
+  pe_esquerdo.write(90);
+  joelho_direito.write(90);
+  joelho_esquerdo.write(90);
+  delay(1000);
 }
 
 void piscaVermelho(){
